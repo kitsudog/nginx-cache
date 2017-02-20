@@ -26,7 +26,7 @@ server{
   root /usr/share/nginx/html;
   include /etc/nginx/conf.d/cache/*.conf;
   location /${PATH_FETCH:-fetch} {
-    access_log /var/log/nginx/access_log_pipe  cache_log;
+    access_log /var/log/nginx/.access_log_pipe  cache_log;
     add_header 'Access-Control-Allow-Origin' '*';
     add_header 'Access-Control-Allow-Methods' 'get, put, post, delete, options';
     add_header 'Access-Control-Allow-Credentials' 'true';
