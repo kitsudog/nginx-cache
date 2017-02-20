@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 mkdir -p /var/cache/nginx
 mkdir -p /etc/nginx/conf.d/cache
-rm /var/log/nginx/.access_log_pipe
-mkfifo /var/log/nginx/.access_log_pipe
+rm -f /var/log/nginx/.access_log_pipe
 cat >/etc/nginx/conf.d/cache.conf <<EOF
 # 中国互联网络中心 1.2.4.8 210.2.4.8
 # 电信 101.226.4.6
@@ -12,7 +11,7 @@ cat >/etc/nginx/conf.d/cache.conf <<EOF
 resolver ${DNS:-1.2.4.8} valid=3600s;
 resolver_timeout 10s; # dns解析超时10s
 
-proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:${KEY_SIZE:-20m} inactive=1d max_size=${CACHE_SIZE:-100m};
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:${KEY_SIZE:-100m} inactive=${INACTIVE:-3d} max_size=${CACHE_SIZE:-1000m};
 
 log_format  cache_log '|\$time_local|\$remote_addr|\$status|\$dest_host|\$request_time|\${dest_scheme}://\${dest_host}\${url}|';
 server{
@@ -50,4 +49,4 @@ server{
   }
 }
 EOF
-nginx && cat /var/log/nginx/.access_log_pipe | cronolog /var/log/nginx/access-%Y-%m-%d.log
+nginx && rm -f /var/log/nginx/.access_log_pipe && mkfifo /var/log/nginx/.access_log_pipe && nginx -s reload && cat /var/log/nginx/.access_log_pipe | cronolog /var/log/nginx/access-%Y-%m-%d.log

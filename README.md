@@ -8,8 +8,9 @@ docker run -d \
 -e VIRTUAL_PORT=80 \
 -e PATH_FETCH=fetch \
 -e PARAM_URL=url \
--e KEY_SIZE=20m \
--e CACHE_SIZE=100m \
+-e KEY_SIZE=100m \
+-e INACTIVE=3d \
+-e CACHE_SIZE=1000m \
 -v /path/custom/:/etc/nginx/conf.d/cache/ \
 -v /path/cache/:/var/cache/nginx/ \
 -v /path/logs/:/var/log/nginx/ \
