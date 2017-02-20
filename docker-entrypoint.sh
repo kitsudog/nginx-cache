@@ -14,14 +14,15 @@ server{
   }
   root /usr/share/nginx/html;
   include /etc/nginx/conf.d/cache/*.conf;
-  location /${PATH_FETCH:fetch} {
+  location /${PATH_FETCH:-fetch} {
     access_log  /var/log/nginx/cache.log  cache_log;
     add_header Access-Control-Allow-Origin *;
-    resolver   114.114.114.114;
+    resolver   ${DNS:-114.114.114.114};
     proxy_pass "\${dest_scheme}://\${dest_host}\${url}";
     proxy_cache IMAGE;
-    proxy_cache_valid  200 304 301 302 10d;
-    proxy_cache_valid  any 1d;
+    proxy_cache_valid 200 304 301 302 10d; # 目标有效的话缓存10天
+    resolver_timeout 10s; # dns解析超时10s
+    proxy_cache_valid any 60s; # 目标无效的话消停60s
     proxy_cache_key \$query_string;
     proxy_redirect              off;
     proxy_set_header Host       \$dest_host;
