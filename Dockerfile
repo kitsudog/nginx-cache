@@ -4,5 +4,5 @@ RUN yum install -y nginx && yum clean all
 ADD . /app/
 WORKDIR /app
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD [""]
