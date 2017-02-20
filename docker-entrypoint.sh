@@ -16,7 +16,10 @@ server{
   include /etc/nginx/conf.d/cache/*.conf;
   location /${PATH_FETCH:-fetch} {
     access_log  /var/log/nginx/cache.log  cache_log;
-    add_header Access-Control-Allow-Origin *;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'get, put, post, delete, options';
+    add_header 'Access-Control-Allow-Credentials' 'true';
+    add_header 'Access-Control-Allow-Headers' 'authorization, origin, content-type, accept';
     resolver   ${DNS:-114.114.114.114};
     proxy_pass "\${dest_scheme}://\${dest_host}\${url}";
     proxy_cache IMAGE;
