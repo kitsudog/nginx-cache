@@ -4,7 +4,8 @@ cat >/etc/nginx/conf.d/cache.conf <<EOF
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=IMAGE:20m inactive=1d max_size=100m;
 log_format  cache_log '|\$remote_addr|\$status|\$dest_host|\$request_time|\${dest_scheme}://\${dest_host}\${url}|';
 server{
-  server_name ${VIRTUAL_HOST:-localhost};
+  listen      ${VIRTUAL_PORT:-80}
+  server_name ${VIRTUAL_HOST:-_};
   if (\$query_string ~* "${PARAM_URL:-url}=(https?)://([^/]+)(/?.+)") {
     set \$dest_scheme \$1;
     set \$dest_host \$2;
