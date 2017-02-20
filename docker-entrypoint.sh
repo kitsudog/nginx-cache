@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 mkdir -p /var/cache/nginx
 mkdir -p /etc/nginx/conf.d/cache
+rm /var/log/nginx/.access_log_pipe
+mkfifo /var/log/nginx/.access_log_pipe
 cat >/etc/nginx/conf.d/cache.conf <<EOF
 # 中国互联网络中心 1.2.4.8 210.2.4.8
 # 电信 101.226.4.6
@@ -12,7 +14,7 @@ resolver_timeout 10s; # dns解析超时10s
 
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:${KEY_SIZE:-20m} inactive=1d max_size=${CACHE_SIZE:-100m};
 
-log_format  cache_log '|\$remote_addr|\$status|\$dest_host|\$request_time|\${dest_scheme}://\${dest_host}\${url}|';
+log_format  cache_log '|\$time_local|\$remote_addr|\$status|\$dest_host|\$request_time|\${dest_scheme}://\${dest_host}\${url}|';
 server{
   listen      ${VIRTUAL_PORT:-80};
   server_name ${VIRTUAL_HOST:-localhost};
@@ -24,7 +26,7 @@ server{
   root /usr/share/nginx/html;
   include /etc/nginx/conf.d/cache/*.conf;
   location /${PATH_FETCH:-fetch} {
-    access_log  /var/log/nginx/cache.log  cache_log;
+    access_log /var/log/nginx/access_log_pipe  cache_log;
     add_header 'Access-Control-Allow-Origin' '*';
     add_header 'Access-Control-Allow-Methods' 'get, put, post, delete, options';
     add_header 'Access-Control-Allow-Credentials' 'true';
@@ -48,4 +50,4 @@ server{
   }
 }
 EOF
-nginx && tail -f /dev/stdout
+nginx && cat /var/log/nginx/.access_log_pipe | cronolog /var/log/nginx/access-%Y-%m-%d.log
