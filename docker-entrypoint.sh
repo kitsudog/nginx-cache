@@ -26,11 +26,9 @@ server{
   include /etc/nginx/conf.d/cache/*.conf;
   location /${PATH_FETCH:-fetch} {
     access_log /var/log/nginx/.access_log_pipe  cache_log;
-    add_header 'Access-Control-Allow-Origin' '*';
-    add_header 'Access-Control-Allow-Methods' 'get, put, post, delete, options';
-    add_header 'Access-Control-Allow-Credentials' 'true';
-    add_header 'Access-Control-Allow-Headers' 'authorization, origin, content-type, accept';
+    add_header 'Access-Control-Allow-Origin' '${ALLOW_ORIGIN:-*}';
     proxy_pass "\${dest_scheme}://\${dest_host}\${url}";
+    proxy_hide_header 'Access-Control-Allow-Origin';
     proxy_cache CACHE;
     proxy_cache_valid 200 304 301 302 10d; # 目标有效的话缓存10天
     proxy_cache_valid any 60s; # 目标无效的话消停60s

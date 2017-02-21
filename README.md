@@ -11,6 +11,7 @@ docker run -d \
 -e KEY_SIZE=100m \
 -e INACTIVE=3d \
 -e CACHE_SIZE=1000m \
+-e ALLOW_ORIGIN='*' \
 -v /path/custom/:/etc/nginx/conf.d/cache/ \
 -v /path/cache/:/var/cache/nginx/ \
 -v /path/logs/:/var/log/nginx/ \
