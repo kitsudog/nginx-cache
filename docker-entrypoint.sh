@@ -22,9 +22,10 @@ server{
     set \$dest_host \$2;
     set \$url \$3;
   }
-  if ($query_string ~* "url=http://(.*.qlogo.cn)(/.+).jpg$") {
-    set $dest_host $1;
-    set $url $2;
+  if (\$query_string ~* "${PARAM_URL:-url}=(https?)://(.*.qlogo.cn)(/.+).(jpg|png|jpeg)\$") {
+    set \$dest_scheme \$1;
+    set \$dest_host \$2;
+    set \$url \$3;
   }
   root /usr/share/nginx/html;
   include /etc/nginx/conf.d/cache/*.conf;
