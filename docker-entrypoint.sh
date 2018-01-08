@@ -40,7 +40,8 @@ server{
     proxy_redirect              off;
     proxy_cache_key             \$query_string;
     proxy_set_header Host       \$dest_host;
-    proxy_set_header Referer    \$http_referer;
+    # proxy_set_header Referer    \$http_referer;
+    proxy_set_header Referer    "";
     proxy_set_header User-Agent \$http_user_agent;
   }
   error_page 404 /404.html;
