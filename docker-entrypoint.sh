@@ -8,7 +8,7 @@ cat >/etc/nginx/conf.d/cache.conf <<EOF
 # 联通 123.125.81.6
 # 阿里 223.5.5.5 223.6.6.6
 # 114系列的 114.114.114.114 114.114.114.115
-resolver ${DNS:-1.2.4.8 114.114.114.114} valid=3600s;
+resolver ${DNS:-1.2.4.8 114.114.114.114} valid=3600s ipv6=off;
 resolver_timeout 10s; # dns解析超时10s
 
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:${KEY_SIZE:-100m} inactive=${INACTIVE:-3d} max_size=${CACHE_SIZE:-1000m};
@@ -22,7 +22,7 @@ server{
     set \$dest_host \$2;
     set \$url \$3;
   }
-  if (\$query_string ~* "${PARAM_URL:-url}=(https?)://(.*.qlogo.cn)(/.+).(jpg|png|jpeg)\$") {
+  if (\$query_string ~* "${PARAM_URL:-url}=(https?)://(.*\.qlogo\.cn)(/.+)\.(jpg|png|jpeg)\$") {
     set \$dest_scheme \$1;
     set \$dest_host \$2;
     set \$url \$3;
